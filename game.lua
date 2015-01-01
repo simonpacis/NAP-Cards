@@ -1,3 +1,5 @@
+require 'data.gamefunctions'
+
 game = {}
 function game:init()
     love.graphics.setFont(zombie);
@@ -42,8 +44,37 @@ function play:init()
 end
 
 function play:enter(previous, selecteddeck)
-  deck = tostring(selecteddeck)
-  --playerdeck, pos, err = json.decode(love.filesystem.read('user/decks/'.. previous .. '.json'), 1, err)
+  cards = json.decode(love.filesystem.read('resources/data/cards'), 1, err)
+
+  -- friendly starting variables
+  friendlydeck = json.decode(love.filesystem.read('user/decks/'.. tostring(selecteddeck) .. '.json'), 1, err)
+  friendlydeck = shuffle(friendlydeck['cards'])
+  friendlyhand = {}
+  friendlywealth = 0
+
+  -- enemy starting variables
+  enemydeck = json.decode(love.filesystem.read('user/decks/2.json'), 1, err)
+  enemydeck = shuffle(enemydeck['cards'])
+  enemyhand = {}
+  enemywealth = 0
+
+  -- board starting variables
+  friendlyboard = {}
+  enemyboard = {}
+
+  -- heads or tails
+  cointoss = math.random(2)
+  
+  -- draw initial cards
+  if cointoss == 1 then -- friendly starts
+    draw(3)
+    draw(4, false, true)
+    givecard("S33", false, true)
+  else -- enemy starts
+    draw(3, false, true)
+    draw(4)
+    givecard("S33")
+  end
 end
 
 function play:update(dt)
@@ -51,8 +82,35 @@ function play:update(dt)
 end
 
 function play:draw()
+    love.graphics.print("Your deck:", 10, 20)
+    ypos = 40
+    for index, value in ipairs(friendlyhand) do
+      love.graphics.print(cards[value]['name'], 10, ypos)
+      ypos = ypos + 20
+    end
+    love.graphics.print("Enemy deck:", 130, 20)
+    ypos2 = 40
+    for index, value in ipairs(enemyhand) do
+      love.graphics.print(cards[value]['name'], 130, ypos2)
+      ypos2 = ypos2 + 20
+    end
     love.graphics.setFont(sysfont);
     love.graphics.setColor(40, 40, 40, 255)
     love.graphics.print( deck, 10, 20)
 
+end
+
+math.randomseed( os.time() )
+function shuffle(t)
+  local n = #t
+ 
+  while n >= 2 do
+    -- n is now the last pertinent index
+    local k = math.random(n) -- 1 <= k <= n
+    -- Quick swap
+    t[n], t[k] = t[k], t[n]
+    n = n - 1
+  end
+ 
+  return t
 end

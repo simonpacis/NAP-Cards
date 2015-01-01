@@ -1,0 +1,35 @@
+{
+	"S33":
+	{
+		"name": "I'm No Beggar",
+		"effect": "wealthup(1)",
+		"effect2": "",
+		"cost": "0",
+		"amount": "0",
+		"cardtype": "spell"
+	},
+	"M1":
+	{
+		"name": "Baby Dragon",
+		"attack": "3",
+		"defense": "3",
+		"effect": "outbreak()",
+		"effect2": "rush()",
+		"cost": "0",
+		"type": "Dragon",
+		"amount": "0",
+		"cardtype": "mob"
+	},
+	"M10":
+	{
+		"name": "Militia",
+		"attack": "1",
+		"defense": "1",
+		"effect": "",
+		"effect2": "",
+		"cost": "1",
+		"type": "Neutral",
+		"amount": "3",
+		"cardtype": "mob"
+	}
+}
