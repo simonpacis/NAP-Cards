@@ -1,0 +1,11 @@
+{
+	"system":
+	{
+		"version": "0000",
+		"font": "Helvetica"
+	},
+	"launcher":
+	{
+		"releaseurl": "https://api.github.com/repos/simonklit/NAP-Cards/releases"
+	}
+}

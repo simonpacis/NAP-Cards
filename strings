@@ -1,0 +1,22 @@
+{
+	"launcher":
+	{
+		"buildprepend": "DEVBUILD",
+		"localbuild": "Local version",
+		"remotebuild": "Remote version",
+		"update": "Update available. Download manually.",
+		"noupdate": "Game is up to date.",
+		"title": "NAP Cards Launcher"
+		},
+	"menu":
+	{
+		"item1": "Join game",
+		"item2": "Host game",
+		"item3": "My decks",
+		"item4": "Exit"
+	},
+	"deckselect":
+	{
+		"instructions": "Please select your desired deck."
+	}
+}
