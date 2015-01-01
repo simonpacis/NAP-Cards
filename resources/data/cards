@@ -1,9 +1,107 @@
 {
+	"S1":
+	{
+		"name": "Smuggler's Goods",
+		"effect": "wealthup(2)",
+		"cost": "0",
+		"amount": "1",
+		"type": "neutral",
+		"cardtype": "spell"
+	},
+	"S2":
+	{
+		"name": "Socialism",
+		"effect": "draw(1, true, true)",
+		"cost": "1",
+		"amount": "2",
+		"type": "neutral",
+		"cardtype": "spell"
+	},
+	"S3":
+	{
+		"name": "Steady Arrow",
+		"effect": "damage(1)",
+		"cost": "1",
+		"amount": "2",
+		"type": "neutral",
+		"cardtype": "spell"
+	},
+	"S5":
+	{
+		"name": "Frostflower",
+		"effect": "stun('targeted')",
+		"cost": "2",
+		"amount": "4",
+		"type": "neutral",
+		"cardtype": "spell"
+	},
+	"S6":
+	{
+		"name": "Level up!",
+		"effect": "grant(1, 1, 1)",
+		"cost": "2",
+		"amount": "2",
+		"type": "neutral",
+		"cardtype": "spell"
+	},
+	"S10":
+	{
+		"name": "Warhorse",
+		"effect": "grant(1, 'none', 'none', 'rush()'')",
+		"cost": "2",
+		"amount": "2",
+		"type": "neutral",
+		"cardtype": "spell"
+	},
+	"S11":
+	{
+		"name": "Dragon Blood",
+		"effect": "grant(1, 'none', 2)",
+		"cost": "3",
+		"amount": "1",
+		"type": "neutral",
+		"cardtype": "spell"
+	},
+	"S12":
+	{
+		"name": "Dragon Egg",
+		"effect": "grant(1, 2, 2)",
+		"cost": "3",
+		"amount": "2",
+		"type": "neutral",
+		"cardtype": "spell"
+	},
+	"S13":
+	{
+		"name": "Dwarven Gold",
+		"effect": "draw(2)",
+		"cost": "3",
+		"amount": "2",
+		"type": "dwarven",
+		"cardtype": "spell"
+	},
+	"S14":
+	{
+		"name": "Forceful Nature",
+		"effect": "unstun(1)",
+		"cost": "3",
+		"amount": "2",
+		"type": "neutral",
+		"cardtype": "spell"
+	},
+	"S15":
+	{
+		"name": "Make 'em Rain!",
+		"effect": "aoe(1, false, true, false)",
+		"cost": "3",
+		"amount": "2",
+		"type": "neutral",
+		"cardtype": "spell"
+	},
 	"S33":
 	{
 		"name": "I'm No Beggar",
 		"effect": "wealthup(1)",
-		"effect2": "",
 		"cost": "0",
 		"amount": "0",
 		"cardtype": "spell"
@@ -16,7 +114,7 @@
 		"effect": "outbreak()",
 		"effect2": "rush()",
 		"cost": "0",
-		"type": "Dragon",
+		"type": "dragon",
 		"amount": "0",
 		"cardtype": "mob"
 	},
@@ -28,7 +126,7 @@
 		"effect": "",
 		"effect2": "",
 		"cost": "1",
-		"type": "Neutral",
+		"type": "neutral",
 		"amount": "3",
 		"cardtype": "mob"
 	}

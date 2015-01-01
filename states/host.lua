@@ -1,11 +1,16 @@
+http = require "socket.http"
+http = require "states.server"
 host = {}
 function host:init()
-    love.graphics.setFont(zombie);
+    ip = http.request("http://ip4.telize.com/") -- get external ipv4 address. ipv6 not supported by LuaSocket yet
+    ip = split(ip, "\n")
+    ip = ip[1]
+    port = 45558 -- nap cards port
     love.graphics.setBackgroundColor(200,200,200)
     longbutton = love.graphics.newImage("resources/images/system/png/buttonLong_grey.png")
     longbutton_pressed = love.graphics.newImage("resources/images/system/png/buttonLong_grey_pressed.png")
-    hostitem1 = Button:new(200, 300, "host game", longbutton, longbutton_pressed, true, false, zombie)
-    hostitem2 = Button:new(200, 230, "Back", longbutton, longbutton_pressed, true, false, zombie)
+    hostitem1 = Button:new(true, true, 200, 300, "host game", longbutton, longbutton_pressed, true, false, zombie)
+    hostitem2 = Button:new(true, true, 200, 230, "Back", longbutton, longbutton_pressed, true, false, zombie)
 end
 
 function host:update()
@@ -15,24 +20,21 @@ function host:update()
 		-- check for mouse events
 
    	if hostitem1:Click() then
-   		text = "clicked 1"
+   		Gamestate.switch(server)
 		end
    	if hostitem2:Click() then
       Gamestate.switch(menu)
 		end
 
-		if hostitem1:Hover() then
-			text2 = "hover 1"
-		end
-		if hostitem2:Hover() then
-			text2 = "hover 2"
-		end
 end
 
 function host:draw()
-		love.graphics.print( text, 10, 20)
-		love.graphics.print( text2, 10, 40)
-
+    love.graphics.setColor(40, 40, 40, 255)
+    love.graphics.setFont(sysfont);
+    love.graphics.print( "Your IP: " .. ip .. ":" .. port, 10, 20)
+    love.graphics.print( "Open port " .. port .. " before trying to host.", 10, 40)
+    love.graphics.setFont(zombie);
+    love.graphics.setColor(255, 255, 255, 255)
 		-- draw graphics
     love.graphics.draw(hostitem1.image, hostitem1.x, hostitem1.y)
     love.graphics.draw(hostitem2.image, hostitem2.x, hostitem2.y)

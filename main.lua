@@ -1,9 +1,10 @@
 json = require 'lib.json'
 Gamestate = require 'lib.gamestate'
-require 'classes'
-require 'menu'
-require 'host'
-require 'game'
+require 'data.classes'
+require 'data.functions'
+require 'states.menu'
+require 'states.host'
+require 'states.game'
 
 function love.load()
 	-- set resolution
