@@ -10,11 +10,9 @@ function play:enter(previous, selecteddeck)
   friendlydeck = json.decode(love.filesystem.read('user/decks/'.. tostring(selecteddeck) .. '.json'), 1, err)
   friendlydeck = shuffle(friendlydeck['cards'])
   friendlyhand = {}
+
   friendlywealth = 0
 
-  card = Card:new('S1', 'hand')
-  card1 = Card:new('S2', 'hand')
-  card2 = Card:new('S3', 'hand')
   -- enemy starting variables
   enemyhand = {}
   enemywealth = 0
@@ -25,7 +23,7 @@ function play:enter(previous, selecteddeck)
 
   -- heads or tails
   cointoss = math.random(2)
-  
+  draw(10)
   -- draw initial cards
   --[[if cointoss == 1 then -- friendly starts
     draw(3)
@@ -40,11 +38,9 @@ end]]
 end
 
 function play:update(dt)
-  if card:hover() then
-  end
-  if card1:hover() then
-  end
-  if card2:hover() then
+  for k, v in ipairs(friendlyhand) do
+    if v:hover() then end
+    if v:click() then end
   end
   if ishosting then
     server:update(dt)
@@ -64,12 +60,21 @@ function play:draw()
       ypos = ypos + 20
     end]]
     love.graphics.setColor(255, 255, 255, 255)
-    love.graphics.draw(card.art, card.x, card.y, card.orient, 0.7, 0.7)
-    love.graphics.draw(card1.art, card1.x, card1.y, card1.orient, 0.7, 0.7)
-    love.graphics.draw(card2.art, card2.x, card2.y, card2.orient, 0.7, 0.7)
+    --love.graphics.draw(card.art, card.x, card.y, card.orient, card.scale, card.scale)
+    --love.graphics.draw(card1.art, card1.x, card1.y, card1.orient, card1.scale, card1.scale)
+    --love.graphics.draw(card2.art, card2.x, card2.y, card2.orient, 0.7, 0.7)
+    for k, v in ipairs(friendlyhand) do
+      if v.z == 0 then
+        love.graphics.draw( v.art, v.x, v.y, v.orient, v.scale, v.scale )
+      end
+    end  
+    for k, v in ipairs(friendlyhand) do
+      if v.z == 1 then
+        love.graphics.draw( v.art, v.x, v.y, v.orient, v.scale, v.scale, v.art:getWidth()/4, v.art:getHeight()/1.3)
+      end
+    end 
     love.graphics.setFont(sysfont)
     love.graphics.setColor(40, 40, 40, 255)
-    love.graphics.print( deck, 10, 20)
     love.graphics.setColor(255, 255, 255, 255)
     love.graphics.draw(cursor, love.mouse.getX(), love.mouse.getY())
 end

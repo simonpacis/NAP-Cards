@@ -12,39 +12,83 @@ function Card:initialize(id, place)
 	self.cost = cards[id]['cost']
 	self.effect = cards[id]['effect']
 	self.type = cards[id]['type']
+	self.z = 0
 	if self.cardtype == "mob" then
 		self.attack = cards[id]['attack']
 		self.defense = cards[id]['attack']
 	end
   self.art = love.graphics.newImage("resources/images/cards/".. self.cardtype .."/".. id ..".png")
   self.place = place
+  self.moved = false
   if place == "hand" then
   	self.slot = tablelength(friendlyhand) + 1
-  	self.x = (width / 2) - 300 + (self.art:getWidth() * 0.7 * (self.slot - 1) / 2)
-  	self.y = (height) - (self.art:getHeight() * 0.7) + 15
+  	self.scale = 0.5
+  	self.x = (width / 2) - 350 + ((self.art:getWidth() / 1.5 * self.scale) * (self.slot))
+  	self.y = (height) - (self.art:getHeight() * self.scale) + 15
   	self.orient = math.rad(0)
-  	tohand(friendlyhand, id)
+		self.prevx = (width / 2) - 350 + ((self.art:getWidth() / 1.5 * self.scale) * (self.slot - 2))
+		self.nextx = (width / 2) - 350 + ((self.art:getWidth() / 1.5 * self.scale) * (self.slot + 1 )) 
   end
 end
 
 function Card:hover()
 	if self.place == "hand" then
-		if (love.mouse.getX() >= self.x
-			and love.mouse.getX() < (self.x + self.art:getWidth()) --something wrong here
-			and love.mouse.getY() >= self.y and love.mouse.getY() < (self.y + self.art:getHeight())) then
-			if stop == false then
-				self.y = self.y - 50
-				hovered = true
-			end
+		--if (love.mouse.getX() >= self.x
+		--	and love.mouse.getX() < (self.x + (self.art:getWidth() * self.scale))
+		--	and love.mouse.getY() >= self.y and love.mouse.getY() < (self.y + (self.art:getHeight() * self.scale))) then
+		if (love.mouse.getX()) >= self.x
+				and love.mouse.getX() < self.nextx
+				and love.mouse.getY() >= self.y and love.mouse.getY() < (self.y + (self.art:getHeight() * self.scale)) then
+				self:mouseenter()
 		else
-			self.y = (height) - (self.art:getHeight() * 0.7) + 15
-			stop = false
-		end
-		if hovered == true then
-			stop = true
-			hovered = false
+				self:mouseexit()
 		end
 	end
+end
+
+function Card:mouseenter()
+	if self.place == "hand" then
+		if self.moved == false then
+			self.z = 1
+			self.scale = 1
+			self.moved = true
+		end
+	end
+end
+
+function Card:mouseexit()
+	if self.place == "hand" then
+		if self.moved == true then
+			self.scale = 0.5
+			self.z = 0
+			self.moved = false
+		end
+	end
+end
+
+function Card:click()
+	if love.mouse.isDown("l") then
+		if stop == false then
+			if (love.mouse.getX()) >= self.x
+					and love.mouse.getX() < self.nextx
+					and love.mouse.getY() >= self.y and love.mouse.getY() < (self.y + (self.art:getHeight() * self.scale)) then
+				self:grab()
+				pressed = true
+			end
+		end
+	else
+		self.image = self.image_passive
+		stop = false
+	end
+	if pressed == true then
+		pressed = false
+		stop = true
+		return true
+	end
+end
+
+function Card:grab()
+	self.x = love.mouse.getX()
 end
 --============================--
 -- GUI ELEMENTS								--
