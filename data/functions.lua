@@ -7,6 +7,15 @@ function sendmsg(data)
 end
 
 function parse(data, role)
+  data = json.decode(data, 1, err)
+  if Gamestate.current() == game then
+    if data.cmd == "chosen" then
+      enemychosen = true
+    end
+    if data.username ~= nil then
+      enemyusername = data.username
+    end
+  end
   if data ~= nil then
     message = data
   end

@@ -24,7 +24,8 @@ function join:update(dt)
 	client:update(dt)
 	if success == true and connected == false then
 		connected = true
-		Gamestate.push(game, client)
+		sendmsg('{"username":"'..username..'"}')
+		Gamestate.push(game)
 	end
 	end
 end
@@ -41,7 +42,7 @@ end
 function join:draw()
     love.graphics.setColor(40, 40, 40, 255)
 		love.graphics.setFont(sysfont)
-		love.graphics.print("Connecting to server...", 10, 20)
+		love.graphics.print(printit, 10, 20)
     love.graphics.setColor(255, 255, 255, 255)
     love.graphics.draw(cursor, love.mouse.getX(), love.mouse.getY())
 end

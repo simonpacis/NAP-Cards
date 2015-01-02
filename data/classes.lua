@@ -1,6 +1,52 @@
 class = require 'lib.middleclass'
 require 'lib.middleclass-commons'
 --============================--
+-- GAME ELEMENTS								--
+--============================--
+
+--------------------------------
+-- CARD
+Card = class('Card')
+function Card:initialize(id, place)
+	self.cardtype = cards[id]['cardtype']
+	self.cost = cards[id]['cost']
+	self.effect = cards[id]['effect']
+	self.type = cards[id]['type']
+	if self.cardtype == "mob" then
+		self.attack = cards[id]['attack']
+		self.defense = cards[id]['attack']
+	end
+  self.art = love.graphics.newImage("resources/images/cards/".. self.cardtype .."/".. id ..".png")
+  self.place = place
+  if place == "hand" then
+  	self.slot = tablelength(friendlyhand) + 1
+  	self.x = (width / 2) - 300 + (self.art:getWidth() * 0.7 * (self.slot - 1) / 2)
+  	self.y = (height) - (self.art:getHeight() * 0.7) + 15
+  	self.orient = math.rad(0)
+  	tohand(friendlyhand, id)
+  end
+end
+
+function Card:hover()
+	if self.place == "hand" then
+		if (love.mouse.getX() >= self.x
+			and love.mouse.getX() < (self.x + self.art:getWidth()) --something wrong here
+			and love.mouse.getY() >= self.y and love.mouse.getY() < (self.y + self.art:getHeight())) then
+			if stop == false then
+				self.y = self.y - 50
+				hovered = true
+			end
+		else
+			self.y = (height) - (self.art:getHeight() * 0.7) + 15
+			stop = false
+		end
+		if hovered == true then
+			stop = true
+			hovered = false
+		end
+	end
+end
+--============================--
 -- GUI ELEMENTS								--
 --============================--
 
@@ -79,10 +125,13 @@ function Button:Hover()
 		end
 end
 
-function Button:Click(pressedimage)
+function Button:Click(pressedimage, audioplay)
 	if love.mouse.isDown("l") then
 		if stop == false then
 		if (love.mouse.getX() >= self.x and love.mouse.getX() < (self.x + self.image_passive:getWidth()) and love.mouse.getY() >= self.y and love.mouse.getY() < (self.y + self.image_passive:getHeight())) then
+			if audioplay ~= false then
+				click:play()
+			end
 			if pressedimage ~= false then
 				self.image = self.image_pressed
 			end

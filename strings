@@ -17,6 +17,8 @@
 	},
 	"deckselect":
 	{
-		"instructions": "Please select your desired deck."
+		"instructions": "Please select your desired deck.",
+		"waitforenemy": "Your enemy, ",
+		"waitforenemy2": ", is still selecting, please wait..."
 	}
 }

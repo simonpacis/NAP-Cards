@@ -28,6 +28,7 @@ function hosting:update(dt)
 end
 
 function onServerConnect(id)
+	sendmsg('{"username":"'..username..'"}')
 	Gamestate.push(game)
 end
 

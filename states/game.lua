@@ -3,7 +3,7 @@ selected = false
 
 game = {}
 function game:init()
-    sendmsg("In")
+    chosen = nil
     love.graphics.setFont(zombie);
     love.graphics.setBackgroundColor(200,200,200)
     files = love.filesystem.getDirectoryItems( "user/decks" )
@@ -16,18 +16,24 @@ function game:init()
 end
 
 function game:update(dt)
+  if ishosting then
+    server:update(dt)
+  else
+    client:update(dt)
+  end
   for k, file in ipairs(files) do
     content, pos, err = json.decode(love.filesystem.read('user/decks/' .. file), 1, err)
     if _G['deck'..k]:Click() then
-      Gamestate.switch(play, k)
+      chosen = k
+      sendmsg('{"cmd":"chosen"}')
     end
+  end
+  if chosen ~= nil and enemychosen == true then
+    Gamestate.switch(play, chosen)
   end
 end
 
 function game:draw()
-    if message ~= nil then
-      love.graphics.print(message, 10, 20)
-    end
     love.graphics.setColor(255, 255, 255, 255)
     for k, file in ipairs(files) do
       love.graphics.draw(_G['deck'..k].image, _G['deck'..k].x, _G['deck'..k].y)
@@ -39,7 +45,11 @@ function game:draw()
     end
     love.graphics.setFont(sysfont);
     love.graphics.setColor(40, 40, 40, 255)
-    love.graphics.print( strings['deckselect']['instructions'], 10, 20)
+    if chosen == nil then
+      love.graphics.print( strings['deckselect']['instructions'], 10, 20)
+    else
+      love.graphics.print( strings['deckselect']['waitforenemy']..enemyusername..strings['deckselect']['waitforenemy2'], 10, 20)
+    end
     love.graphics.setColor(255, 255, 255, 255)
     love.graphics.draw(cursor, love.mouse.getX(), love.mouse.getY())
 end

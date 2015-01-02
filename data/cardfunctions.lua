@@ -1,4 +1,5 @@
 function draw(amount, friendly, enemy, steal) -- draw cards
+	--drawcard:play()
 	if steal == true then -- if the decks are swapped so players steal from eachother
 		if friendly ~= false then -- if friendly draws
 			for i = 1, amount do
