@@ -1,4 +1,5 @@
 class = require 'lib.middleclass'
+require 'lib.middleclass-commons'
 --============================--
 -- GUI ELEMENTS								--
 --============================--

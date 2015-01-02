@@ -4,11 +4,14 @@ require 'data.classes'
 require 'data.functions'
 require 'states.menu'
 require 'states.host'
-require 'states.game'
 require "states.hosting"
 require 'states.join'
+require 'states.game'
+require 'states.play'
 
 function love.load()
+    isjoining = false
+    ishosting = false
 	-- set resolution
 	love.window.setMode( 1024, 576, {fullscreen=false} ) -- make this relative to the computer being played on
 	width, height, flags = love.window.getMode( )

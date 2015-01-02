@@ -31,7 +31,7 @@ function host:draw()
     love.graphics.setColor(40, 40, 40, 255)
     love.graphics.setFont(sysfont);
     love.graphics.print( "Your IP: " .. ip .. ":" .. port, 10, 20)
-    love.graphics.print( "Open port " .. port .. " before trying to host.", 10, 40)
+    love.graphics.print( "Open port " .. port .. " as TCP before trying to host.", 10, 40)
     love.graphics.setFont(zombie);
     love.graphics.setColor(255, 255, 255, 255)
 		-- draw graphics
