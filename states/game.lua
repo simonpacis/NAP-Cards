@@ -27,13 +27,14 @@ function game:draw()
     for k, file in ipairs(files) do
       love.graphics.draw(_G['deck'..k].image, _G['deck'..k].x, _G['deck'..k].y)
     end
-    love.graphics.setFont(sysfont);
-    love.graphics.setColor(40, 40, 40, 255)
-    love.graphics.print( strings['deckselect']['instructions'], 10, 20)
+    love.graphics.setColor(230, 230, 230, 255)
     love.graphics.setFont(zombie);
     for k, file in ipairs(files) do
       love.graphics.print(_G['deck'..k].text, _G['deck'..k].text_x, _G['deck'..k].text_y)
     end
+    love.graphics.setFont(sysfont);
+    love.graphics.setColor(40, 40, 40, 255)
+    love.graphics.print( strings['deckselect']['instructions'], 10, 20)
     love.graphics.setColor(255, 255, 255, 255)
     love.graphics.draw(cursor, love.mouse.getX(), love.mouse.getY())
 end
@@ -88,10 +89,10 @@ function play:draw()
       love.graphics.print(cards[value]['name'], 10, ypos)
       ypos = ypos + 20
     end
-    love.graphics.print("Enemy deck:", 130, 20)
+    love.graphics.print("Enemy deck:", 160, 20)
     ypos2 = 40
     for index, value in ipairs(enemyhand) do
-      love.graphics.print(cards[value]['name'], 130, ypos2)
+      love.graphics.print(cards[value]['name'], 160, ypos2)
       ypos2 = ypos2 + 20
     end
     love.graphics.setFont(sysfont);

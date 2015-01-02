@@ -5,6 +5,8 @@ require 'data.functions'
 require 'states.menu'
 require 'states.host'
 require 'states.game'
+require "states.hosting"
+require 'states.join'
 
 function love.load()
 	-- set resolution
@@ -16,8 +18,8 @@ function love.load()
     cursor = love.graphics.newImage("resources/images/system/png/cursorGauntlet_grey.png")
     -- Hide the default mouse.
     love.mouse.setVisible(false)
-    longbutton = love.graphics.newImage("resources/images/system/png/buttonLong_grey.png")
-    longbutton_pressed = love.graphics.newImage("resources/images/system/png/buttonLong_grey_pressed.png")
+    longbutton = love.graphics.newImage("resources/images/system/png/buttonLong_blue.png")
+    longbutton_pressed = love.graphics.newImage("resources/images/system/png/buttonLong_blue_pressed.png")
     strings, pos, err = json.decode(love.filesystem.read('strings'), 1, err)
     zombie = love.graphics.newFont( "resources/fonts/ZOMBIE.ttf", 25 )
     sysfont = love.graphics.newFont(14)
