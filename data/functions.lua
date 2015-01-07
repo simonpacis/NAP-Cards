@@ -16,6 +16,9 @@ function parse(data, role)
       enemyusername = data.username
     end
   end
+  if Gamestate.current() == play then
+
+  end
   if data ~= nil then
     message = data
   end
@@ -53,4 +56,50 @@ function shuffle(t)
   end
  
   return t
+end
+
+function prepuserconf()
+      if love.filesystem.exists("system") == false then
+        love.filesystem.createDirectory("system")
+      end
+        if love.filesystem.exists("user/userconf.nap") and love.filesystem.exists("system/memoir") then
+            usersha256 = hash.sha256()
+            usersha256:process(love.filesystem.read('user/userconf.nap'))
+            shafinal = usersha256:finish()
+              memoir = love.filesystem.read('system/memoir')
+              if memoir == shafinal then
+                  userconf = json.decode(love.filesystem.read('user/userconf.nap'), 1, err)
+              else
+                newuserconf()
+              end
+        else
+          newuserconf()
+        end
+end
+
+function newuserconf()
+            userconf = {}
+            userconf['username'] = usernames[math.random(tablelength(usernames))]
+            userconf['wins'] = "0"
+            userconf['losses'] = "0"
+            userconf['myths'] = {}
+            userconf['leggies'] = {}
+            userconf['fullscreen'] = "true"
+            userconf['resw'] = nil
+            userconf['resh'] = nil
+            jsonuserconf = json.encode(userconf)
+            writesuccess = love.filesystem.write('user/userconf.nap', jsonuserconf)
+            usersha256 = hash.sha256()
+            usersha256:process(love.filesystem.read('user/userconf.nap'))
+            shafinal = usersha256:finish()
+            memoirwrite = love.filesystem.write("system/memoir", shafinal)
+end
+
+function savememoir()
+if love.filesystem.exists("system/memoir") then
+  usersha256 = hash.sha256()
+  usersha256:process(love.filesystem.read('user/userconf.nap'))
+  shafinal = usersha256:finish()
+  memoirwrite = love.filesystem.write("system/memoir", shafinal)
+end
 end

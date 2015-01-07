@@ -2,9 +2,9 @@ http = require "socket.http"
 
 host = {}
 function host:init()
-    ip = http.request("http://ip4.telize.com/") -- get external ipv4 address. ipv6 not supported by LuaSocket yet
-    ip = split(ip, "\n")
-    ip = ip[1]
+    remip = http.request("http://ip4.telize.com/") -- get external ipv4 address. ipv6 not supported by LuaSocket yet
+    remip = split(remip, "\n")
+    remip = remip[1]
     port = 45558 -- nap cards port
     love.graphics.setBackgroundColor(200,200,200)
     hostitem1 = Button:new(true, true, 200, 300, "host game", longbutton, longbutton_pressed, true, false, zombie)
@@ -30,7 +30,7 @@ end
 function host:draw()
     love.graphics.setColor(40, 40, 40, 255)
     love.graphics.setFont(sysfont);
-    love.graphics.print( "Your IP: " .. ip .. ":" .. port, 10, 20)
+    love.graphics.print( "Your IP: " .. remip, 10, 20)
     love.graphics.print( "Open port " .. port .. " as TCP before trying to host.", 10, 40)
     love.graphics.setFont(zombie);
     love.graphics.setColor(255, 255, 255, 255)

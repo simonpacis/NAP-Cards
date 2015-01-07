@@ -2,30 +2,29 @@ function draw(amount, friendly, enemy, steal) -- draw cards
 	--drawcard:play()
 	if steal == true then -- if the decks are swapped so players steal from eachother
 		if friendly ~= false then -- if friendly draws
-			for i = 1, amount do
+			Timer.addPeriodic(0.1, function()
 	    	tohand(friendlyhand, enemydeck[1])
 	    	table.remove(enemydeck, 1)
-			end
+			end, amount)
 		end
 		if enemy == true then -- if enemy draws
-			for i = 1, amount do
+			Timer.addPeriodic(0.1, function()
 	    	tohand(enemyhand, friendlydeck[1])
 	    	table.remove(friendlydeck, 1)
-			end
+			end, amount)
 		end
 	else -- if decks are not swapped
 		if friendly ~= false then -- if friendly draws
-			num = 1
-			for i = 1, amount do
+			Timer.addPeriodic(0.1, function()
 	    	tohand(friendlyhand, friendlydeck[1])
 	    	table.remove(friendlydeck, 1)
-			end
+			end, amount)
 		end
 		if enemy == true then -- if enemy draws
-			for i = 1, amount do
+			Timer.addPeriodic(0.1, function()
 	    	tohand(enemyhand, enemydeck[1])
 	    	table.remove(enemydeck, 1)
-			end
+			end, amount)
 		end
 	end
 end

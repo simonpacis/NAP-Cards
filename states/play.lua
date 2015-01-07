@@ -23,7 +23,7 @@ function play:enter(previous, selecteddeck)
 
   -- heads or tails
   cointoss = math.random(2)
-  draw(10)
+  draw(3)
   -- draw initial cards
   --[[if cointoss == 1 then -- friendly starts
     draw(3)
@@ -38,9 +38,10 @@ end]]
 end
 
 function play:update(dt)
+  flux.update(dt)
+  Timer.update(dt)
   for k, v in ipairs(friendlyhand) do
-    if v:hover() then end
-    if v:click() then end
+    v:check()
   end
   if ishosting then
     server:update(dt)
@@ -54,15 +55,7 @@ function play:draw()
     --if message ~= nil then
     --  love.graphics.print(message, 10, 20)
     --end
-    ypos = 40
-    --[[for index, value in ipairs(friendlyhand) do
-      love.graphics.print(cards[value]['name'], 10, ypos)
-      ypos = ypos + 20
-    end]]
     love.graphics.setColor(255, 255, 255, 255)
-    --love.graphics.draw(card.art, card.x, card.y, card.orient, card.scale, card.scale)
-    --love.graphics.draw(card1.art, card1.x, card1.y, card1.orient, card1.scale, card1.scale)
-    --love.graphics.draw(card2.art, card2.x, card2.y, card2.orient, 0.7, 0.7)
     for k, v in ipairs(friendlyhand) do
       if v.z == 0 then
         love.graphics.draw( v.art, v.x, v.y, v.orient, v.scale, v.scale )
@@ -70,7 +63,11 @@ function play:draw()
     end  
     for k, v in ipairs(friendlyhand) do
       if v.z == 1 then
-        love.graphics.draw( v.art, v.x, v.y, v.orient, v.scale, v.scale, v.art:getWidth()/4, v.art:getHeight()/1.3)
+        if v.upsize == true then
+          love.graphics.draw( v.art, v.x, v.y, v.orient, v.scale, v.scale, v.art:getWidth()/4, v.art:getHeight()/1.3)
+        else
+          love.graphics.draw( v.art, v.x, v.y, v.orient, v.scale, v.scale )
+        end
       end
     end 
     love.graphics.setFont(sysfont)

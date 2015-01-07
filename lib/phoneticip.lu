@@ -1,0 +1,44 @@
+function iptotext(ip)
+  local ip = split(ip, ".")
+  thistext = ""
+  prev = ""
+  local current = 0
+  local standalone = {"ja", "la", "ha", "pe", "pu", "po", "te", "ta", "tu", "ze"}
+  local combovowel = {"j", "l", "h", "k", "p", "t", "r", "x", "z", "c"}
+  local vowels = {}
+  vowels["a"] = true
+  vowels["e"] = true
+  vowels["i"] = true
+  vowels["o"] = true
+  vowels["u"] = true
+  vowels["y"] = true
+
+  for k, v in ipairs(ip) do
+    if prev == " " or prev == "" then
+      for a = 1, string.len(v)+1 do
+        current = string.sub(v, a,a)
+        current = tonumber(current)
+        if type(current) == "number" then
+          thistext = thistext .. standalone[current+1]
+          prev = standalone[current+1]
+          prev = string.sub(prev, -1)
+        end
+        if type(current) ~= "number" then
+          thistext = thistext .. " "
+          prev = " "
+        end
+      end
+    elseif vowels[prev] then
+      for a = 1, string.len(v)+1 do
+        current = string.sub(v, a,a)
+        current = tonumber(current)
+        if type(current) == "number" then
+          thistext = thistext .. combovowel[current+1]
+          prev = string.sub(standalone[current], -1)
+        end
+      end
+    end
+  end
+
+  return thistext
+end

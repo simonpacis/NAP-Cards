@@ -8,14 +8,18 @@ require 'lib.middleclass-commons'
 -- CARD
 Card = class('Card')
 function Card:initialize(id, place)
+	self.x = width - 30 -- start at own pile
+	self.y = height / 2 -- start at own pile
 	self.cardtype = cards[id]['cardtype']
 	self.cost = cards[id]['cost']
 	self.effect = cards[id]['effect']
 	self.type = cards[id]['type']
 	self.z = 0
+	self.upsize = false
+	self.orient = math.rad(90)
 	if self.cardtype == "mob" then
 		self.attack = cards[id]['attack']
-		self.defense = cards[id]['attack']
+		self.defense = cards[id]['defense']
 	end
   self.art = love.graphics.newImage("resources/images/cards/".. self.cardtype .."/".. id ..".png")
   self.place = place
@@ -23,25 +27,23 @@ function Card:initialize(id, place)
   if place == "hand" then
   	self.slot = tablelength(friendlyhand) + 1
   	self.scale = 0.5
-  	self.x = (width / 2) - 350 + ((self.art:getWidth() / 1.5 * self.scale) * (self.slot))
-  	self.y = (height) - (self.art:getHeight() * self.scale) + 15
-  	self.orient = math.rad(0)
-		self.prevx = (width / 2) - 350 + ((self.art:getWidth() / 1.5 * self.scale) * (self.slot - 2))
+  	self.orgx = (width / 2) - 350 + ((self.art:getWidth() / 1.5 * self.scale) * (self.slot))
+  	self.orgy = (height) - (self.art:getHeight() * self.scale) + 15
+  	flux.to(self, 1, { x = self.orgx, y = self.orgy, orient = 0 }) -- ANIMATE IT
 		self.nextx = (width / 2) - 350 + ((self.art:getWidth() / 1.5 * self.scale) * (self.slot + 1 )) 
   end
 end
 
 function Card:hover()
-	if self.place == "hand" then
-		--if (love.mouse.getX() >= self.x
-		--	and love.mouse.getX() < (self.x + (self.art:getWidth() * self.scale))
-		--	and love.mouse.getY() >= self.y and love.mouse.getY() < (self.y + (self.art:getHeight() * self.scale))) then
-		if (love.mouse.getX()) >= self.x
-				and love.mouse.getX() < self.nextx
-				and love.mouse.getY() >= self.y and love.mouse.getY() < (self.y + (self.art:getHeight() * self.scale)) then
-				self:mouseenter()
-		else
-				self:mouseexit()
+	if ingrab ~= true then
+		if self.place == "hand" then
+			if (love.mouse.getX()) >= self.x
+					and love.mouse.getX() < self.nextx
+					and love.mouse.getY() >= self.y and love.mouse.getY() < (self.y + (self.art:getHeight() * self.scale)) then
+					self:mouseenter()
+			else
+					self:mouseexit()
+			end
 		end
 	end
 end
@@ -49,6 +51,7 @@ end
 function Card:mouseenter()
 	if self.place == "hand" then
 		if self.moved == false then
+			self.upsize = true
 			self.z = 1
 			self.scale = 1
 			self.moved = true
@@ -72,24 +75,68 @@ function Card:click()
 			if (love.mouse.getX()) >= self.x
 					and love.mouse.getX() < self.nextx
 					and love.mouse.getY() >= self.y and love.mouse.getY() < (self.y + (self.art:getHeight() * self.scale)) then
-				self:grab()
-				pressed = true
+				if self.pressed ~= true then
+					self.grabbed = true
+					ingrab = true
+					self.scale = 0.5
+					self.z = 0
+					self.upsize = false
+					self.moved = false
+				else
+					self.grabbed = false
+				end
 			end
 		end
 	else
-		self.image = self.image_passive
 		stop = false
 	end
-	if pressed == true then
-		pressed = false
+	if self.pressed == true then
+		self.pressed = false
+		stop = true
+		return true
+	end
+end
+
+function Card:rclick()
+	if love.mouse.isDown("r") then
+		if stop == false then
+			if self.grabbed == true then
+					self.grabbed = false
+					ingrab = false
+					self.z = 0
+					flux.to(self, 0.5, { x = self.orgx, y = self.orgy })
+				end
+			end
+	else
+		stop = false
+	end
+	if self.pressed == true then
+		self.pressed = false
 		stop = true
 		return true
 	end
 end
 
 function Card:grab()
-	self.x = love.mouse.getX()
+	if self.grabbed == true then
+		self.z = 1
+		self.x = love.mouse.getX() - (self.art:getWidth() / 2 * self.scale)
+		self.y = love.mouse.getY() - (self.art:getHeight() / 2 * self.scale)
+	end
 end
+
+function Card:move(newx, newy, time, format)
+	flux.to(self, time, { x = self.newx, y = self.newy })
+end
+
+function Card:check()
+    if self:grab() then end
+    if self:hover() then end
+    if self:click() then end
+    if self:rclick() then end
+end
+
+-- assert(loadstring(s))() -- load from string and execute
 --============================--
 -- GUI ELEMENTS								--
 --============================--
@@ -165,6 +212,7 @@ end
 
 function Button:Hover()
 		if (love.mouse.getX() >= self.x and love.mouse.getX() < (self.x + self.image_passive:getWidth()) and love.mouse.getY() >= self.y and love.mouse.getY() < (self.y + self.image_passive:getHeight())) then
+			--hover:play()
 			return true
 		end
 end

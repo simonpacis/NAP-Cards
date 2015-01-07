@@ -12,8 +12,10 @@
 	{
 		"item1": "Join game",
 		"item2": "Host game",
-		"item3": "My decks",
-		"item4": "Exit"
+		"item3": "Card Pouch",
+		"item4": "Library"
+		"item5": "Options",
+		"item6": "Exit"
 	},
 	"deckselect":
 	{
