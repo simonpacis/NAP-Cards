@@ -8,20 +8,40 @@ require 'lib.middleclass-commons'
 -- CARD
 Card = class('Card')
 function Card:initialize(id, place)
+	self.id = id
 	self.x = width - 30 -- start at own pile
 	self.y = height / 2 -- start at own pile
 	self.cardtype = cards[id]['cardtype']
 	self.cost = cards[id]['cost']
-	self.effect = cards[id]['effect']
+	if cards[id]['effect'] ~= ""  or cards[id]['effect'] ~= nil then
+		self.effect = cards[id]['effect']
+		self.flavoreffect = parseeffect(self.effect)
+	end
 	self.type = cards[id]['type']
+	self.amount = cards[id]['amount']
+	self.name = cards[id]['name']
 	self.z = 0
 	self.upsize = false
-	self.orient = math.rad(90)
+	self.orient = 0
 	if self.cardtype == "mob" then
 		self.attack = cards[id]['attack']
 		self.defense = cards[id]['defense']
 	end
-  self.art = love.graphics.newImage("resources/images/cards/".. self.cardtype .."/".. id ..".png")
+	if cards[id]['rarity'] == nil then
+		self.art = spell
+	else
+		if cards[id]['rarity'] == "common" then
+			self.art = common
+		elseif cards[id]['rarity'] == "uncommon" then
+			self.art = uncommon
+		elseif cards[id]['rarity'] == "special" then
+			self.art = special
+		elseif cards[id]['rarity'] == "legendary" then
+			self.art = legendary
+		elseif cards[id]['rarity'] == "mythical" then
+			self.art = mythical
+		end
+  end
   self.place = place
   self.moved = false
   if place == "hand" then
@@ -29,7 +49,8 @@ function Card:initialize(id, place)
   	self.scale = 0.5
   	self.orgx = (width / 2) - 350 + ((self.art:getWidth() / 1.5 * self.scale) * (self.slot))
   	self.orgy = (height) - (self.art:getHeight() * self.scale) + 15
-  	flux.to(self, 1, { x = self.orgx, y = self.orgy, orient = 0 }) -- ANIMATE IT
+  	flux.to(self, 0.5, { x = (width - 200), y = (height / 2), orient = 0, scale = 1 })
+  	Timer.add(1.25, function(func) flux.to(self, 0.5, { x = self.orgx, y = self.orgy, orient = 0, scale = 0.5 }) end)
 		self.nextx = (width / 2) - 350 + ((self.art:getWidth() / 1.5 * self.scale) * (self.slot + 1 )) 
   end
 end
@@ -130,10 +151,110 @@ function Card:move(newx, newy, time, format)
 end
 
 function Card:check()
-    if self:grab() then end
-    if self:hover() then end
-    if self:click() then end
-    if self:rclick() then end
+    self:grab()
+    self:hover()
+    self:click()
+    self:rclick()
+end
+
+function Card:draw(upsize)
+	love.graphics.setColor(255, 255, 255, 255)
+	if upsize == true then
+		love.graphics.draw( self.art, self.x, self.y, self.orient, self.scale, self.scale, self.art:getWidth()/4, self.art:getHeight()/1.3)
+	else
+		love.graphics.draw( self.art, self.x, self.y, self.orient, self.scale, self.scale )
+	end
+	love.graphics.setColor(40, 40, 40, 255)
+	love.graphics.setFont(homestead)
+
+	if playfair:getWidth(self.name) > self.art:getWidth() then
+		namefont = playfair_medium
+		namex = self.x + (self.art:getWidth() * self.scale / 2) - (playfair_medium:getWidth(self.name) * self.scale / 2)
+	else
+		namefont = playfair
+		namex = self.x + (self.art:getWidth() * self.scale / 2) - (playfair:getWidth(self.name) * self.scale / 2)
+	end
+	namey = self.y + ((self.art:getHeight() / 2) * self.scale)
+
+	amountx = (self.x + (self.art:getWidth() * self.scale)) - (20 * self.scale)
+	amounty = (self.y + (self.art:getHeight() * self.scale)) - (28 * self.scale)
+	typex = self.x + (self.art:getWidth() * self.scale / 2) - ((playfair_small:getWidth(self.type) * self.scale) / 2)
+	typey = self.y + ((self.art:getHeight() / 2) * self.scale) - (13 * self.scale)
+	costx = self.x + (13 * self.scale)
+	costy = (self.y + (self.art:getHeight() * self.scale)) - (30 * self.scale)
+	if self.flavoreffect ~= nil then
+		effectx = self.x + (12 * self.scale)
+		effecty = self.y + ((self.art:getHeight() / 2) * self.scale) + (30 * self.scale)
+	end
+	if upsize == true then
+		love.graphics.setColor(219,159,45, 255)
+		love.graphics.print(self.cost, costx, costy, self.orient, self.scale, self.scale, self.art:getWidth()/4, self.art:getHeight()/1.3)
+		circlex = costx + 17
+		circley = costy + (self.scale * 5)
+		love.graphics.setColor(255,255,255, 255)
+		if tonumber(self.cost) > 0 then
+			for circleamount = 1, tonumber(self.cost) do
+				love.graphics.draw( wealth, circlex, circley, self.orient, self.scale, self.scale, self.art:getWidth()/4, self.art:getHeight()/1.3)
+				circlex = circlex + (12 * self.scale)
+			end
+		end
+		love.graphics.setColor(96, 95, 93, 255)
+		love.graphics.print(tostring(self.amount), amountx, amounty, self.orient, self.scale, self.scale, self.art:getWidth()/4, self.art:getHeight()/1.3)
+		love.graphics.setFont(namefont)
+		love.graphics.setColor(0,0,0,255)
+		love.graphics.print(self.name, namex, namey, self.orient, self.scale, self.scale, self.art:getWidth()/4, self.art:getHeight()/1.3)
+		love.graphics.setFont(playfair_small)
+		love.graphics.print(self.type, typex, typey, self.orient, self.scale, self.scale, self.art:getWidth()/4, self.art:getHeight()/1.3)
+		love.graphics.print(self.type, typex, typey, self.orient, self.scale, self.scale, self.art:getWidth()/4, self.art:getHeight()/1.3)
+		if self.flavoreffect ~= nil then
+			love.graphics.printf(self.flavoreffect, effectx, effecty, self.art:getWidth() - 15, "center", self.orient, self.scale, self.scale, self.art:getWidth()/4, self.art:getHeight()/1.3)
+		end
+	else
+		love.graphics.setColor(219,159,45, 255)
+		love.graphics.print(self.cost, costx, costy, self.orient, self.scale, self.scale)
+		circlex = costx + 17
+		circley = costy + (self.scale * 5)
+		love.graphics.setColor(255,255,255, 255)
+		if tonumber(self.cost) > 0 then
+			for circleamount = 1, tonumber(self.cost) do
+				love.graphics.draw( wealth, circlex, circley, self.orient, self.scale, self.scale)
+				circlex = circlex + (12 * self.scale)
+			end
+		end
+		love.graphics.setColor(96, 95, 93, 255)
+		love.graphics.print(tostring(self.amount), amountx, amounty, self.orient, self.scale, self.scale)
+		love.graphics.setFont(namefont)
+		love.graphics.setColor(0,0,0,255)
+		love.graphics.print(self.name, namex, namey, self.orient, self.scale, self.scale)
+		love.graphics.setFont(playfair_small)
+		love.graphics.setColor(0,0,0,255)
+		love.graphics.print(self.type, typex, typey, self.orient, self.scale, self.scale)
+		if self.flavoreffect ~= nil then
+			love.graphics.printf(self.flavoreffect, effectx, effecty, self.art:getWidth() - 15, "center", self.orient, self.scale, self.scale)	
+		end
+	end
+
+	if self.cardtype == "mob" then
+		attackx = self.x + (17 * self.scale)
+		attacky = self.y + (13 * self.scale)
+		defensex = (self.x + (self.art:getWidth() * self.scale)) - (27 * self.scale)
+		defensey = self.y + (13 * self.scale)
+
+		love.graphics.setFont(homestead)
+		if upsize == true then
+			love.graphics.setColor(131, 27, 2, 255)
+			love.graphics.print(tostring(self.attack), attackx, attacky, self.orient, self.scale, self.scale, self.art:getWidth()/4, self.art:getHeight()/1.3)
+			love.graphics.setColor(235, 213, 93, 255)
+			love.graphics.print(tostring(self.defense), defensex, defensey, self.orient, self.scale, self.scale, self.art:getWidth()/4, self.art:getHeight()/1.3)
+
+		else
+			love.graphics.setColor(131, 27, 2, 255)
+			love.graphics.print(tostring(self.attack), attackx, attacky, self.orient, self.scale, self.scale)
+			love.graphics.setColor(235, 213, 93, 255)
+			love.graphics.print(tostring(self.defense), defensex, defensey, self.orient, self.scale, self.scale)
+		end
+		love.graphics.setColor(40, 40, 40, 255)
+	end
 end
 
 -- assert(loadstring(s))() -- load from string and execute

@@ -15,12 +15,29 @@
 		"item3": "Card Pouch",
 		"item4": "Library"
 		"item5": "Options",
-		"item6": "Exit"
+		"item6": "Exit",
+		"welcome": "Welcome, "
+		"statistics":
+		{
+			"stats": "Statistics:",
+			"wins": "Wins: ",
+			"losses": "Losses: ",
+			"leggies": "Legendary cards: "
+		},
+		"gamename": "NAP Cards",
+		"version": "Pre-alpha 0101"
 	},
 	"deckselect":
 	{
 		"instructions": "Please select your desired deck.",
 		"waitforenemy": "Your enemy, ",
 		"waitforenemy2": ", is still selecting, please wait..."
+	},
+	"host":
+	{
+		"item1": "Host game",
+		"item2": "Back",
+		"yourip": "Your IP: ",
+		"portmsg": "Open port 45558 as TCP before trying to host a game."
 	}
 }

@@ -106,28 +106,100 @@
 		"amount": "0",
 		"cardtype": "spell"
 	},
-	"M1":
+	"M001":
 	{
 		"name": "Baby Dragon",
 		"attack": "3",
 		"defense": "3",
-		"effect": "outbreak()",
-		"effect2": "rush()",
+		"effect": "outbreak|rush",
 		"cost": "0",
 		"type": "dragon",
 		"amount": "0",
-		"cardtype": "mob"
+		"cardtype": "mob",
+		"rarity": "common"
 	},
-	"M10":
+	"M006":
 	{
 		"name": "Militia",
 		"attack": "1",
 		"defense": "1",
 		"effect": "",
-		"effect2": "",
 		"cost": "1",
 		"type": "neutral",
 		"amount": "3",
-		"cardtype": "mob"
-	}
+		"cardtype": "mob",
+		"rarity": "common"
+	},
+	"M007":
+	{
+		"name": "Monkeyman",
+		"attack": "1",
+		"defense": "1",
+		"effect": "",
+		"cost": "1",
+		"type": "savage",
+		"amount": "3",
+		"cardtype": "mob",
+		"rarity": "common"
+	},
+	"M008":
+	{
+		"name": "Protective Lad",
+		"attack": "0",
+		"defense": "1",
+		"effect": "taunt",
+		"cost": "1",
+		"type": "neutral",
+		"amount": "3",
+		"cardtype": "mob",
+		"rarity": "common"
+	},
+	"M009":
+	{
+		"name": "Turthle",
+		"attack": "0",
+		"defense": "4",
+		"effect": "taunt|noattack",
+		"cost": "1",
+		"type": "beast",
+		"amount": "2",
+		"cardtype": "mob",
+		"rarity": "uncommon"
+	},
+	"M010":
+	{
+		"name": "Bone Tribesman",
+		"attack": "1",
+		"defense": "1",
+		"effect": "",
+		"cost": "1",
+		"type": "savage",
+		"amount": "8",
+		"cardtype": "mob",
+		"rarity": "common"
+	},
+	"M0":
+	{
+		"name": "",
+		"attack": "",
+		"defense": "",
+		"effect": "",
+		"cost": "",
+		"type": "",
+		"amount": "",
+		"cardtype": "mob",
+		"rarity": "common"
+	},
+	"M027":
+	{
+		"name": "Wolf",
+		"attack": "1",
+		"defense": "1",
+		"effect": "rush",
+		"cost": "2",
+		"type": "beast",
+		"amount": "3",
+		"cardtype": "mob",
+		"rarity": "common"
+	},
 }

@@ -26,13 +26,17 @@ function ip:keyreleased(key)
 		joinip = string.sub(joinip, 1, -2)
 	end
 	if key == "return" then
-   	Gamestate.switch(join, joinip)
+		if string.len(joinip) >= 1 then
+   		Gamestate.switch(join, joinip)
+   	end
 	end
 end
 
 function ip:update(dt)
   if ipitem1:Click() then
+  if string.len(joinip) >= 1 then
    	Gamestate.switch(join, joinip)
+  end
 	end
   if ipitem2:Click() then
    	Gamestate.switch(menu)

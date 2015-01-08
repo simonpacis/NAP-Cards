@@ -55,18 +55,18 @@ function play:draw()
     --if message ~= nil then
     --  love.graphics.print(message, 10, 20)
     --end
-    love.graphics.setColor(255, 255, 255, 255)
     for k, v in ipairs(friendlyhand) do
       if v.z == 0 then
-        love.graphics.draw( v.art, v.x, v.y, v.orient, v.scale, v.scale )
+        v:draw()
       end
     end  
     for k, v in ipairs(friendlyhand) do
       if v.z == 1 then
         if v.upsize == true then
-          love.graphics.draw( v.art, v.x, v.y, v.orient, v.scale, v.scale, v.art:getWidth()/4, v.art:getHeight()/1.3)
+          v:draw(true)
+          --love.graphics.draw( v.art, v.x, v.y, v.orient, v.scale, v.scale, v.art:getWidth()/4, v.art:getHeight()/1.3)
         else
-          love.graphics.draw( v.art, v.x, v.y, v.orient, v.scale, v.scale )
+          v:draw()
         end
       end
     end 

@@ -1,11 +1,12 @@
 require 'data.functions'
 require 'data.cardfunctions'
 
-function tohand(hand, card)
-	if tablelength(hand) < 10 then
-		table.insert(hand, Card:new(card, 'hand'))
+function tohand(deck)
+	if tablelength(friendlyhand) < 10 then
+		table.insert(friendlyhand, Card:new(deck[1], 'hand'))
+		table.remove(friendlydeck, 1)
 	else
-		burncard(hand, card)
+		burncard(friendlyhand, deck[1])
 	end
 end
 

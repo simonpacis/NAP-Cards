@@ -15,7 +15,8 @@ require 'states.game'
 require 'states.play'
 
 function love.load()
-    usernames = { "Almarkinda", "Ilmadun", "Munotes", "Miangore", "Vayne" }
+    -- set title
+    love.window.setTitle( "NAP Cards" )
     if love.filesystem.exists("user") == false then
         ok = love.filesystem.createDirectory("user")
     end
@@ -67,8 +68,6 @@ function love.load()
     end
 	love.window.setMode( reswidth, resheight, {fullscreen=userfullscreen} )
 	width, height, flags = love.window.getMode( )
-	-- set title
-	love.window.setTitle( "NAP Cards" )
     -- Load audio resources
     click = love.audio.newSource("resources/sounds/click.wav", "static")
     hover = love.audio.newSource("resources/sounds/hover.ogg", "static")
@@ -79,14 +78,25 @@ function love.load()
     cursor = love.graphics.newImage("resources/images/system/png/cursorGauntlet_grey.png")
     -- Hide the default mouse.
     love.mouse.setVisible(false)
+
+    -- load images
+    common = love.graphics.newImage("resources/images/cards/common.png")
+    uncommon = love.graphics.newImage("resources/images/cards/uncommon.png")
+    special = love.graphics.newImage("resources/images/cards/special.png")
+    legendary = love.graphics.newImage("resources/images/cards/legendary.png")
+    mythical = love.graphics.newImage("resources/images/cards/mythical.png")
+    wealth = love.graphics.newImage("resources/images/cards/wealth.png")
+
     cards = json.decode(love.filesystem.read('resources/data/cards'), 1, err)
     longbutton = love.graphics.newImage("resources/images/system/png/buttonLong_blue.png")
     longbutton_pressed = love.graphics.newImage("resources/images/system/png/buttonLong_blue_pressed.png")
     strings, pos, err = json.decode(love.filesystem.read('strings'), 1, err)
     zombie = love.graphics.newFont( "resources/fonts/ZOMBIE.ttf", 25 )
-    zombig = love.graphics.newFont( "resources/fonts/ZOMBIE.ttf", 50 )
+    homestead = love.graphics.newFont( "resources/fonts/homestead.ttf", 17 )
+    playfair = love.graphics.newFont("resources/fonts/playfair.otf", 20)
+    playfair_small = love.graphics.newFont("resources/fonts/playfair.otf", 13)
+    playfair_medium = love.graphics.newFont("resources/fonts/playfair.otf", 15)
 
-    homestead = love.graphics.newFont( "resources/fonts/homestead.ttf", 15 )
     sysfont = love.graphics.newFont(14)
     Gamestate.registerEvents()
     Gamestate.switch(menu)
