@@ -13,6 +13,8 @@ require 'states.join'
 require 'states.options'
 require 'states.game'
 require 'states.play'
+require 'lib.tesound'
+
 
 function love.load()
     -- set title
@@ -71,8 +73,11 @@ function love.load()
     -- Load audio resources
     click = love.audio.newSource("resources/sounds/click.wav", "static")
     hover = love.audio.newSource("resources/sounds/hover.ogg", "static")
-    drawcard = love.audio.newSource("resources/sounds/drawcard.wav", "static")
+    drawcard = love.audio.newSource("resources/sounds/drawcard.ogg", "static")
     menumusic = love.audio.newSource("resources/music/dragonwarrior.wav")
+    youbegin = love.audio.newSource("resources/sounds/youbegin.ogg", "static")
+    enemybegins = love.audio.newSource("resources/sounds/enemybegins.ogg", "static")
+    diceroll = love.audio.newSource("resources/sounds/dice.ogg")
 
     -- Load the "cursor"
     cursor = love.graphics.newImage("resources/images/system/png/cursorGauntlet_grey.png")

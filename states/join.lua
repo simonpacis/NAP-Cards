@@ -1,12 +1,13 @@
 require "lib.lube"
 require 'data.functions'
 
-join = {}
 
 protocolClient = lube.tcpClient:subclass("protocolClient")
 protocolClient._implemented = true
 -- define protocolserver
 client = protocolClient()
+
+join = {}
 
 function join:enter(previous, ip)
 	if isjoining then
@@ -40,11 +41,11 @@ end
 
 function onClientReceive(data, id)
 	if isjoining then
-  if client.connected == true then
-    Gamestate.push(game, client)
-  end
+	  if client.connected == true then
+	    Gamestate.switch(game, client)
+	  end
+ 	end
   parse(data, "client")
- end
 end
 
 function join:draw()

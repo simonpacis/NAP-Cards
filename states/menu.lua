@@ -18,7 +18,6 @@ function menu:update()
 		-- check for mouse events
 
    	if item1:Click() then
-        isjoining = true
    	    Gamestate.switch(ip)
 	end
    	if item2:Click() then

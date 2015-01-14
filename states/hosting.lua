@@ -1,10 +1,11 @@
 require "lib.lube"
 require 'data.functions'
 
-hosting = {}
 protocolServer = lube.tcpServer:subclass("protocolServer")
 protocolServer._implemented = true
 server = protocolServer()
+
+hosting = {}
 
 function hosting:init()
 	if ishosting == true then
@@ -23,7 +24,7 @@ end
 
 function onServerConnect(id)
 	sendmsg('{"username":"'..username..'"}')
-	Gamestate.push(game)
+	Gamestate.switch(game)
 end
 
 function onServerReceive(data, id)

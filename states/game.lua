@@ -18,7 +18,8 @@ end
 function game:update(dt)
   if ishosting then
     server:update(dt)
-  else
+  end
+  if isjoining then
     client:update(dt)
   end
   for k, file in ipairs(files) do
@@ -34,7 +35,13 @@ function game:update(dt)
 end
 
 function game:draw()
+
     love.graphics.setColor(255, 255, 255, 255)
+    if _G['message'] ~= nil then
+      love.graphics.print(_G['message'], 10, 70)
+    else
+      love.graphics.print("no message", 10, 70)
+    end
     for k, file in ipairs(files) do
       love.graphics.draw(_G['deck'..k].image, _G['deck'..k].x, _G['deck'..k].y)
     end

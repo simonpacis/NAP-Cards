@@ -27,6 +27,7 @@ function ip:keyreleased(key)
 	end
 	if key == "return" then
 		if string.len(joinip) >= 1 then
+   		isjoining = true
    		Gamestate.switch(join, joinip)
    	end
 	end
@@ -35,6 +36,7 @@ end
 function ip:update(dt)
   if ipitem1:Click() then
   if string.len(joinip) >= 1 then
+  	isjoining = true
    	Gamestate.switch(join, joinip)
   end
 	end

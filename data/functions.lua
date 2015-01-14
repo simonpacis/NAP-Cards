@@ -1,26 +1,128 @@
 function sendmsg(data)
-  if isjoining then 
-    client:send(data)
-  elseif ishosting then
-    server:send(data)
+  if ishosting then 
+    server:send(data .. "<eom>")
+  else
+    client:send(data .. "<eom>")
   end
 end
 
-function parse(data, role)
-  data = json.decode(data, 1, err)
-  if Gamestate.current() == game then
-    if data.cmd == "chosen" then
-      enemychosen = true
-    end
-    if data.username ~= nil then
-      enemyusername = data.username
-    end
-  end
-  if Gamestate.current() == play then
+function sendcmd(cmd)
+  sendmsg('{"cmd":"' .. cmd .. '"}')
+end
 
+function parse(data, role)
+  if string.find(data, "<eom>", 1, true) then -- received full message
+    if count_substring(data, "<eom>") > 1 then -- more than one message
+      splitdata = data:split("<eom>") -- split by messages
+      for k,v in ipairs(splitdata) do -- perform all received messages
+        _G['message'] = _G['message'] .. "!" .. v .. "!"
+        if string.find(v, "{") then
+          parsesinglemessage(v, role)
+        end
+      end
+    else
+      pos = string.find(data, "<eom>", 1, true)
+      remdata = string.sub(data, 1, pos - 1) -- remove eom
+      parsesinglemessage(remdata, role)
+    end
+  else
+      _G['message'] = "uncomplete message"
   end
-  if data ~= nil then
-    message = data
+  data = nil
+end
+
+function parsesinglemessage(data, role)
+    if data ~= nil then
+    datajson, dpos, derror = json.decode(data, 1, err)
+    if derror ~= nil then
+      _G['message'] = derror
+      return
+    end
+    if datajson ~= nil then
+      _G['message'] = data
+    end
+
+    if Gamestate.current() == game then
+      if datajson.cmd == "chosen" then
+        enemychosen = true
+      end
+      if datajson.username ~= nil then
+        enemyusername = datajson.username
+      end
+    end
+
+    if Gamestate.current() == play then
+      if string.find(datajson.cmd, "|", 1, true) then -- if the string contains a function seperator (multiple functions)
+        datajson.cmd = split(datajson.cmd, "|") -- seperate by seperator
+        for k,v in ipairs(datajson.cmd) do
+          local base = split(v, "(") -- split the core effect and the arguments
+          local core = base[1] -- define the core
+          local args = base[2] -- define the arguments
+          local found = false
+          args = stripchars(args, "()") -- remove parenthesis
+          if string.find(args, ", ", 1, true) then -- if multiple arguments found with comma and space
+            splitargs = args:split(", ") -- split by comma and space
+            found = true
+          elseif string.find(args, ",", 1, true) then-- if multiple arguments found with comma and no space
+            splitargs = args:split(",") -- split by comma
+            found = true
+          end
+          newargs = {} -- newargs is the manipulated arguments
+          if found then -- if multiple arguments are found
+            argiter = 1 -- set iteration variable to 1
+            for k, v in ipairs(splitargs) do -- iterate over all the split-up arguments
+              newv = tonumber(v) -- try to convert argument to number
+              if newv == nil then -- if it is not convertible to number
+                newv = string.gsub(v, "'", '') -- remove eventual quotation marks and set as string
+              end
+              newargs[argiter] = newv -- add argument to newargs table
+              argiter = argiter + 1 -- increase arg iteration varible
+            end
+          else -- if only one argument is found
+            newargs[1] = tonumber(args) -- convert argument to number
+            if newargs[1] == nil then -- if argument is not convertible to number
+              newargs[1] = string.gsub(args, "'", '') -- use original arguments (remove the quotationmarks)
+            end
+          end
+          _G['message'] = data
+          _G[core](unpack(newargs)) -- execute command (unpack for eventual multiple arguments)
+        end
+      else -- if only one command is found in message
+        if string.find(datajson.cmd, "(", 1, true) then -- if command has parenthesis (to be sure)
+          local base = split(datajson.cmd, "(") -- split the core function and the arguments
+          local core = base[1] -- define the core
+          local args = base[2] -- define the arguments
+          local found = false
+          args = stripchars(args, "()") -- remove parenthesis
+          if string.find(args, ", ", 1, true) then -- if multiple arguments found with comma and space
+            splitargs = args:split(", ") -- split by comma and space
+            found = true
+          elseif string.find(args, ",", 1, true) then-- if multiple arguments found with comma and no space
+            splitargs = args:split(",") -- split by comma
+            found = true
+          end
+          newargs = {} -- newargs is the manipulated arguments
+          if found then -- if multiple arguments are found
+            argiter = 1 -- set iteration variable to 1
+            for k, v in ipairs(splitargs) do -- iterate over all the split-up arguments
+              newv = tonumber(v) -- try to convert argument to number
+              if newv == nil then -- if it is not convertible to number
+                newv = string.gsub(v, "'", '') -- remove eventual quotation marks and set as string
+              end
+              newargs[argiter] = newv -- add argument to newargs table
+              argiter = argiter + 1 -- increase arg iteration varible
+            end
+          else -- if only one argument is found
+            newargs[1] = tonumber(args) -- convert argument to number
+            if newargs[1] == nil then -- if argument is not convertible to number
+              newargs[1] = string.gsub(args, "'", '') -- use original arguments (remove the quotationmarks)
+            end
+          end
+          _G['message'] = data
+          _G[core](unpack(newargs)) -- execute command (unpack for eventual multiple arguments)
+        end
+      end
+    end
   end
 end
 
@@ -72,18 +174,46 @@ function tablelength(T)
   return count
 end
 
+function string:split( inSplitPattern, outResults )
+  if not outResults then
+    outResults = { }
+  end
+  local theStart = 1
+  local theSplitStart, theSplitEnd = string.find( self, inSplitPattern, theStart )
+  while theSplitStart do
+    table.insert( outResults, string.sub( self, theStart, theSplitStart-1 ) )
+    theStart = theSplitEnd + 1
+    theSplitStart, theSplitEnd = string.find( self, inSplitPattern, theStart )
+  end
+  table.insert( outResults, string.sub( self, theStart ) )
+  return outResults
+end
+
+function playsound(sound)
+  _G[sound]:play()
+end
+
+function setvar(variable, value)
+  _G[variable] = value
+end
+
 function split(inputstr, sep)
         if sep == nil then
-                sep = "%s"
+          sep = "%s"
         end
         local t={} ; i=1
         for str in string.gmatch(inputstr, "([^"..sep.."]+)") do
-                t[i] = str
-                i = i + 1
+          t[i] = str
+          i = i + 1
         end
         return t
 end
 
+function count_substring( s1, s2 )
+ local magic =  "[%^%$%(%)%%%.%[%]%*%+%-%?]"
+ local percent = function(s)return "%"..s end
+    return select( 2, s1:gsub( s2:gsub(magic,percent), "" ) )
+end
 
 math.randomseed( os.time() )
 function shuffle(t)

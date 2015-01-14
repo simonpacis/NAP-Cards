@@ -12,47 +12,63 @@ function Card:initialize(id, place)
 	self.x = width - 30 -- start at own pile
 	self.y = height / 2 -- start at own pile
 	self.cardtype = cards[id]['cardtype']
-	self.cost = cards[id]['cost']
-	if cards[id]['effect'] ~= ""  or cards[id]['effect'] ~= nil then
-		self.effect = cards[id]['effect']
-		self.flavoreffect = parseeffect(self.effect)
-	end
-	self.type = cards[id]['type']
-	self.amount = cards[id]['amount']
-	self.name = cards[id]['name']
-	self.z = 0
-	self.upsize = false
-	self.orient = 0
-	if self.cardtype == "mob" then
-		self.attack = cards[id]['attack']
-		self.defense = cards[id]['defense']
-	end
-	if cards[id]['rarity'] == nil then
-		self.art = spell
-	else
-		if cards[id]['rarity'] == "common" then
-			self.art = common
-		elseif cards[id]['rarity'] == "uncommon" then
-			self.art = uncommon
-		elseif cards[id]['rarity'] == "special" then
-			self.art = special
-		elseif cards[id]['rarity'] == "legendary" then
-			self.art = legendary
-		elseif cards[id]['rarity'] == "mythical" then
-			self.art = mythical
+	if self.cardtype == "blank" then
+		self.z = 0
+		self.upsize = false
+		self.y = height / 4
+		self.art = special -- change to blank artwork when created
+		self.place = place
+		if self.place == "enemyhand" then
+			self.slot = 10 - tablelength(enemyhand) + 1
+	  	self.scale = 0.5
+	  	self.orient = 0
+	  	self.orgx = (200) + ((self.art:getWidth() / 1.5 * self.scale) * self.slot) --- ((self.art:getWidth() / 1.5 * self.scale) * (self.slot))
+	  	self.orgy = self.art:getHeight() / 2 * self.scale
+	  	flux.to(self, 0.5, { x = self.orgx, y = self.orgy, orient = math.rad(180), scale = 0.5 })
 		end
-  end
-  self.place = place
-  self.moved = false
-  if place == "hand" then
-  	self.slot = tablelength(friendlyhand) + 1
-  	self.scale = 0.5
-  	self.orgx = (width / 2) - 350 + ((self.art:getWidth() / 1.5 * self.scale) * (self.slot))
-  	self.orgy = (height) - (self.art:getHeight() * self.scale) + 15
-  	flux.to(self, 0.5, { x = (width - 200), y = (height / 2), orient = 0, scale = 1 })
-  	Timer.add(1.25, function(func) flux.to(self, 0.5, { x = self.orgx, y = self.orgy, orient = 0, scale = 0.5 }) end)
-		self.nextx = (width / 2) - 350 + ((self.art:getWidth() / 1.5 * self.scale) * (self.slot + 1 )) 
-  end
+	else
+		self.cost = cards[id]['cost']
+		if cards[id]['effect'] ~= ""  or cards[id]['effect'] ~= nil then
+			self.effect = cards[id]['effect']
+			self.flavoreffect = parseeffect(self.effect)
+		end
+		self.type = cards[id]['type']
+		self.amount = cards[id]['amount']
+		self.name = cards[id]['name']
+		self.z = 0
+		self.upsize = false
+		self.orient = 0
+		if self.cardtype == "mob" then
+			self.attack = cards[id]['attack']
+			self.defense = cards[id]['defense']
+		end
+		if cards[id]['rarity'] == nil then
+			self.art = spell
+		else
+			if cards[id]['rarity'] == "common" then
+				self.art = common
+			elseif cards[id]['rarity'] == "uncommon" then
+				self.art = uncommon
+			elseif cards[id]['rarity'] == "special" then
+				self.art = special
+			elseif cards[id]['rarity'] == "legendary" then
+				self.art = legendary
+			elseif cards[id]['rarity'] == "mythical" then
+				self.art = mythical
+			end
+	  end
+	  self.place = place
+	  self.moved = false
+	  if place == "hand" then
+	  	self.slot = tablelength(friendlyhand) + 1
+	  	self.scale = 0.5
+	  	self.orgx = (width / 2) - 350 + ((self.art:getWidth() / 1.5 * self.scale) * (self.slot))
+	  	self.orgy = (height) - (self.art:getHeight() * self.scale) + 15
+	  	flux.to(self, 0.5, { x = (width - 200), y = (height / 2), orient = 0, scale = 1 })
+	  	Timer.add(1.25, function(func) flux.to(self, 0.5, { x = self.orgx, y = self.orgy, orient = 0, scale = 0.5 }) end)
+			self.nextx = (width / 2) - 350 + ((self.art:getWidth() / 1.5 * self.scale) * (self.slot + 1 )) 
+	  end
+	 end
 end
 
 function Card:hover()
@@ -167,6 +183,7 @@ function Card:draw(upsize)
 	love.graphics.setColor(40, 40, 40, 255)
 	love.graphics.setFont(homestead)
 
+	if self.cardtype ~= "blank" then
 	if playfair:getWidth(self.name) > self.art:getWidth() then
 		namefont = playfair_medium
 		namex = self.x + (self.art:getWidth() * self.scale / 2) - (playfair_medium:getWidth(self.name) * self.scale / 2)
@@ -183,8 +200,8 @@ function Card:draw(upsize)
 	costx = self.x + (13 * self.scale)
 	costy = (self.y + (self.art:getHeight() * self.scale)) - (30 * self.scale)
 	if self.flavoreffect ~= nil then
-		effectx = self.x + (12 * self.scale)
-		effecty = self.y + ((self.art:getHeight() / 2) * self.scale) + (30 * self.scale)
+		effectx = self.x + (self.art:getWidth()/2 * self.scale) - (playfair_small:getWidth(self.flavoreffect) * self.scale / 2)
+		effecty = self.y + ((self.art:getHeight() * self.scale / 2)) + (30 * self.scale)
 	end
 	if upsize == true then
 		love.graphics.setColor(219,159,45, 255)
@@ -207,7 +224,7 @@ function Card:draw(upsize)
 		love.graphics.print(self.type, typex, typey, self.orient, self.scale, self.scale, self.art:getWidth()/4, self.art:getHeight()/1.3)
 		love.graphics.print(self.type, typex, typey, self.orient, self.scale, self.scale, self.art:getWidth()/4, self.art:getHeight()/1.3)
 		if self.flavoreffect ~= nil then
-			love.graphics.printf(self.flavoreffect, effectx, effecty, self.art:getWidth() - 15, "center", self.orient, self.scale, self.scale, self.art:getWidth()/4, self.art:getHeight()/1.3)
+			love.graphics.printf(self.flavoreffect, effectx, effecty, self.art:getWidth() / 2, "center", self.orient, self.scale, self.scale, self.art:getWidth()/4, self.art:getHeight()/1.3)
 		end
 	else
 		love.graphics.setColor(219,159,45, 255)
@@ -230,7 +247,7 @@ function Card:draw(upsize)
 		love.graphics.setColor(0,0,0,255)
 		love.graphics.print(self.type, typex, typey, self.orient, self.scale, self.scale)
 		if self.flavoreffect ~= nil then
-			love.graphics.printf(self.flavoreffect, effectx, effecty, self.art:getWidth() - 15, "center", self.orient, self.scale, self.scale)	
+			love.graphics.printf(self.flavoreffect, effectx, effecty, self.art:getWidth() / 2, "center", self.orient, self.scale, self.scale)	
 		end
 	end
 
@@ -255,6 +272,7 @@ function Card:draw(upsize)
 		end
 		love.graphics.setColor(40, 40, 40, 255)
 	end
+end	
 end
 
 -- assert(loadstring(s))() -- load from string and execute

@@ -1,44 +1,34 @@
-function draw(amount, friendly, enemy, steal) -- draw cards
+function draw(amount, steal) -- draw cards
 	--drawcard:play()
+	drawing = true
 	if steal == true then -- if the decks are swapped so players steal from eachother
-		if friendly ~= false then -- if friendly draws
-			Timer.addPeriodic(1.25, function()
-	    	tohand(friendlyhand, enemydeck[1])
-	    	table.remove(enemydeck, 1)
-			end, amount)
-		end
-		if enemy == true then -- if enemy draws
-			Timer.addPeriodic(1.25, function()
-	    	tohand(enemyhand, friendlydeck[1])
-	    	table.remove(friendlydeck, 1)
-			end, amount)
-		end
 	else -- if decks are not swapped
-		if friendly ~= false then -- if friendly draws
-	    drawn = 1
-			Timer.addPeriodic(1.25, function()
-				if drawn <= amount then
-					drawn = drawn + 1
-					tohand(friendlydeck)
-				end
-			end)
-				sendmsg('{"cmd": "draw"}')
-		end
-		if enemy == true then -- if enemy draws
-			Timer.addPeriodic(1.25, function()
-	    	tohand(enemyhand, enemydeck[1])
-	    	table.remove(enemydeck, 1)
-			end, amount)
-		end
+	  drawn = 1
+		Timer.addPeriodic(1.25, function()
+			if drawn <= amount then
+				drawn = drawn + 1
+				tohand(friendlydeck)
+				sendcmd('enemydraw()')
+				playsound("drawcard")
+			end
+		end)
+		Timer.add((1.25*amount + 1.25), function()
+			if addtodraw ~= nil then
+				tohand(nil, addtodraw)
+				sendcmd('enemydraw()')
+				playsound("drawcard")
+			end
+			drawing = false
+		end)
 	end
 end
 
-function givecard(id, friendly, enemy)
-	if friendly ~= false then
-		tohand(friendlyhand, id)
-	end
-	if enemy == true then
-		tohand(enemyhand, id)
+function givecard(id)
+	if drawing == false or drawing == nil then
+		tohand(nil, id)
+		sendcmd('enemydraw()')
+	else
+		addtodraw = id
 	end
 end
 

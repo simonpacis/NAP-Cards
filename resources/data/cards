@@ -1,4 +1,8 @@
 {
+	"blank":
+	{
+		"cardtype": "blank"
+	},
 	"S1":
 	{
 		"name": "Smuggler's Goods",
