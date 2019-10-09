@@ -2,7 +2,7 @@ http = require "socket.http"
 
 host = {}
 function host:init()
-    remip = http.request("http://ip4.telize.com/") -- get external ipv4 address. ipv6 not supported by LuaSocket yet
+    remip = http.request("https://api.ipify.org/?format=text") -- get external ipv4 address. ipv6 not supported by LuaSocket yet
     remip = split(remip, "\n")
     remip = remip[1]
     port = 45558 -- nap cards port

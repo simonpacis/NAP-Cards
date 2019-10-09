@@ -48,6 +48,7 @@ function love.load()
         else
           userfullscreen = false
         end
+        userfullscreen = false
         jsonuserconf = json.encode(userconf)
         writesuccess = love.filesystem.write('user/userconf.nap', jsonuserconf)
         savememoir()
